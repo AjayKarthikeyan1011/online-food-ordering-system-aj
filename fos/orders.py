@@ -54,3 +54,31 @@ def order_history(conn, customer_id):
         "SELECT o.*, c.name AS customer_name FROM orders o "
         "JOIN customers c ON c.id = o.customer_id "
         "WHERE o.customer_id = ? ORDER BY o.id", (customer_id,)).fetchall()
+
+
+def update_status(conn, order_id):
+    """Move an order to the next step of the delivery flow."""
+    order = get_order(conn, order_id)
+    if order["status"] == "Cancelled":
+        raise ValidationError(f"Order {order['id']} was cancelled.")
+    if order["status"] == STATUS_FLOW[-1]:
+        raise ValidationError(f"Order {order['id']} is already Delivered.")
+    new_status = STATUS_FLOW[STATUS_FLOW.index(order["status"]) + 1]
+    conn.execute("UPDATE orders SET status = ? WHERE id = ?", (new_status, order["id"]))
+    conn.commit()
+    return order["status"], new_status
+
+
+def cancel_order(conn, order_id):
+    order = get_order(conn, order_id)
+    if order["status"] != "Placed":
+        raise ValidationError("Only orders with status 'Placed' can be cancelled.")
+    conn.execute("UPDATE orders SET status = 'Cancelled' WHERE id = ?", (order["id"],))
+    conn.commit()
+
+
+def active_orders(conn):
+    return conn.execute(
+        "SELECT o.*, c.name AS customer_name FROM orders o "
+        "JOIN customers c ON c.id = o.customer_id "
+        "WHERE o.status NOT IN ('Delivered', 'Cancelled') ORDER BY o.id").fetchall()
