@@ -1,5 +1,7 @@
 # Online Food Ordering System
 
+**Student:** Ajay Karthikeyan K | **Register No.:** 2503917720521007 | **Course:** B.Tech | **Subject:** Software Engineering
+
 A command-line application built with **Python 3** and **SQLite** that lets customers browse a restaurant menu, build a cart, place orders and track them, while staff manage the menu and order status.
 
 ## Problem Statement and Objectives
@@ -80,3 +82,6 @@ Future enhancements:
 - Online payment integration.
 - Ratings, coupons and email/SMS order notifications.
 - Report export to CSV/PDF.
+
+## Team Member Details and Individual Contributions
+Individual project. **Ajay Karthikeyan K (2503917720521007)** did the design, coding, testing, Git operations and documentation.
